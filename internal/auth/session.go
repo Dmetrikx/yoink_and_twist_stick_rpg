@@ -9,6 +9,8 @@ import (
 	"github.com/gorilla/sessions"
 )
 
+const sessionDir = "/tmp/jungle-sessions"
+
 const sessionName = "jungle-session"
 
 var store *sessions.FilesystemStore
@@ -18,11 +20,14 @@ func init() {
 }
 
 func InitStore() {
+	if err := os.MkdirAll(sessionDir, 0700); err != nil {
+		panic("failed to create session directory: " + err.Error())
+	}
 	key := os.Getenv("SESSION_KEY")
 	if key == "" {
 		key = "dev-session-key-change-in-prod!!"
 	}
-	store = sessions.NewFilesystemStore("/tmp/jungle-sessions", []byte(key))
+	store = sessions.NewFilesystemStore(sessionDir, []byte(key))
 	store.MaxLength(1 << 20) // 1MB max session size for game state
 	store.Options = &sessions.Options{
 		Path:     "/",
