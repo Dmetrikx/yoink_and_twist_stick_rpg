@@ -1,0 +1,23 @@
+package repository
+
+import (
+	"database/sql"
+	_ "embed"
+
+	_ "modernc.org/sqlite"
+)
+
+//go:embed sqlite/schema.sql
+var schema string
+
+func Open(path string) (*sql.DB, error) {
+	db, err := sql.Open("sqlite", path+"?_journal_mode=WAL&_busy_timeout=5000")
+	if err != nil {
+		return nil, err
+	}
+	if _, err := db.Exec(schema); err != nil {
+		db.Close()
+		return nil, err
+	}
+	return db, nil
+}

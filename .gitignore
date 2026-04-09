@@ -28,5 +28,13 @@ go.work.sum
 .env
 
 # Editor/IDE
-# .idea/
+.idea/
 # .vscode/
+
+# Build outputs
+server
+web/dist/
+web/node_modules/
+
+# Session files
+/tmp/jungle-sessions/
